@@ -15,4 +15,15 @@ public class MainClassTest {
         int actualNumber = mainClassObj.getClassNumber();
         Assert.assertTrue("Number returned by getClassNumber() = " + actualNumber + " < 45", actualNumber > 45);
     }
+
+    @Test
+    public void testGetClassString() {
+        String actualString = mainClassObj.getClassString();
+        boolean containsLowerCase = actualString.contains("hello");
+        boolean containsUpperCase = actualString.contains("Hello");
+
+        if (!containsLowerCase && !containsUpperCase) {
+            Assert.fail("getClassNumber() returned string '" + actualString + "' that not contains 'hello' or 'Hello'");
+        }
+    }
 }
