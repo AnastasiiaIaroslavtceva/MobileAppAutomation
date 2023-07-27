@@ -85,6 +85,33 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testArticleTitlesContent() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Java",
+                "Cannot find 'Search…' input",
+                5
+        );
+
+        List<WebElement> titleElements = waitForSeveralElementsPresent(
+                By.id("org.wikipedia:id/page_list_item_title"),
+                "Cannot find article titles",
+                15
+        );
+
+        for (WebElement titleElement : titleElements) {
+            String articleTitle = titleElement.getAttribute("text");
+            Assert.assertTrue("Article title don't contains 'Java'", articleTitle.contains("Java"));
+        }
+    }
+
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
