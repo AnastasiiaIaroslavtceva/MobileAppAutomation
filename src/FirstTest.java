@@ -1,6 +1,7 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -24,7 +25,7 @@ public class FirstTest {
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("appPackage", "org.wikipedia");
         capabilities.setCapability("appActivity", ".main.MainActivity");
-        capabilities.setCapability("app", "C:\\Users\\ayaroslavtseva\\Desktop\\MobileAppAutomation\\apks\\org.wikipedia.apk");
+        capabilities.setCapability("app", "C:\\Users\\Yaroslavtsevi\\IdeaProjects\\MobileAppAutomation\\apks\\org.wikipedia.apk");
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
     }
@@ -35,28 +36,47 @@ public class FirstTest {
     }
 
     @Test
-    public void firstTest() {
-        WebElement elementToInitSearch = driver.findElementByXPath("//*[contains(@text, 'Search Wikipedia')]");
-        elementToInitSearch.click();
-
-        WebElement elementToEnterSearchLine = waitForElementPresentByXpath(
-                "//*[contains(@text, 'Search…')]",
-                "Cannot find search input",
+    public void testSearchInputText() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
                 5
         );
-        elementToEnterSearchLine.sendKeys("Appium");
+
+        assertElementHasText(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Search…",
+                "We see unexpected text!"
+        );
     }
 
-    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage, long timeoutInSeconds) {
+    private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
-        By by = By.xpath(xpath);
         return wait.until(
                 ExpectedConditions.presenceOfElementLocated(by)
         );
     }
 
-    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage) {
-        return waitForElementPresentByXpath(xpath, errorMessage, 5);
+    private WebElement waitForElementAndClick(By by, String errorMessage, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
+        element.click();
+        return element;
+    }
+
+    private void assertElementHasText(By by, String expectedText, String errorMessage) {
+        WebElement element = waitForElementPresent(
+                by,
+                "Cannot find element",
+                5
+        );
+
+        String actualText = element.getAttribute("text");
+
+        Assert.assertEquals(
+                errorMessage,
+                expectedText,
+                actualText
+        );
     }
 }
