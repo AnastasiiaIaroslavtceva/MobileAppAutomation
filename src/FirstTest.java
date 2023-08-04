@@ -31,6 +31,15 @@ public class FirstTest {
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
     }
 
+    @Before
+    public void skipOnboarding() {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/fragment_onboarding_skip_button"),
+                "Cannot find 'Skip' button",
+                5
+        );
+    }
+
     @After
     public void tearDown() {
         driver.quit();
@@ -46,7 +55,7 @@ public class FirstTest {
 
         assertElementHasText(
                 By.id("org.wikipedia:id/search_src_text"),
-                "Search…",
+                "Search Wikipedia",
                 "We see unexpected text!"
         );
     }
@@ -60,14 +69,14 @@ public class FirstTest {
         );
 
         waitForElementAndSendKeys(
-                By.xpath("//*[contains(@text, 'Search…')]"),
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Sky",
-                "Cannot find 'Search…' input",
+                "Cannot find 'Search Wikipedia' input",
                 5
         );
 
         waitForSeveralElementsPresent(
-                By.id("org.wikipedia:id/page_list_item_container"),
+                By.xpath("//*[@class = 'android.view.ViewGroup']"),
                 "We see less articles than expected!",
                 15
         );
@@ -94,9 +103,9 @@ public class FirstTest {
         );
 
         waitForElementAndSendKeys(
-                By.xpath("//*[contains(@text, 'Search…')]"),
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Java",
-                "Cannot find 'Search…' input",
+                "Cannot find 'Search Wikipedia' input",
                 5
         );
 
