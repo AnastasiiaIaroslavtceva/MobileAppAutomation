@@ -408,6 +408,158 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testSaveTwoArticleToMyList() {
+        String searchPlaceholder = "Search Wikipedia";
+        String nameOfFolder = "Learning programming";
+        String articleDescriptionOnArticlePageLocator = "pcs-edit-section-title-description";
+        String saveButtonLocator = "org.wikipedia:id/page_save";
+        String actionButtonOnPopupLocator = "org.wikipedia:id/snackbar_action";
+        String savedArticleLocator = "org.wikipedia:id/page_list_item_container";
+        String articleDescriptionOnMyListLocator = "org.wikipedia:id/page_list_item_description";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, '" + searchPlaceholder + "')]"),
+                "Cannot find '" + searchPlaceholder + "' input on Explore page",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Java",
+                "Cannot find '" + searchPlaceholder + "' input on Search page",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@class = 'android.view.ViewGroup']//*[@text = 'High-level programming language']"),
+                "Cannot find 'JavaScript' article",
+                5
+        );
+
+        waitForElementPresent(
+                By.id(articleDescriptionOnArticlePageLocator),
+                "Cannot find article description",
+                15
+        );
+
+        waitForElementAndClick(
+                By.id(saveButtonLocator),
+                "Cannot find button to save article",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id(actionButtonOnPopupLocator),
+                "Cannot find button 'Add to list'",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                nameOfFolder,
+                "Cannot put text into articles folder input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text = 'OK']"),
+                "Cannot press OK button'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot close article",
+                10
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@class = 'android.view.ViewGroup']//*[@text = 'Object-oriented programming language']"),
+                "Cannot find 'Java' article",
+                5
+        );
+
+        waitForElementPresent(
+                By.id(articleDescriptionOnArticlePageLocator),
+                "Cannot find article title description",
+                15
+        );
+
+        waitForElementAndClick(
+                By.id(saveButtonLocator),
+                "Cannot find button to save page",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id(actionButtonOnPopupLocator),
+                "Cannot find button 'Add to list'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/item_title"),
+                "Cannot find created folder " + nameOfFolder,
+                5
+        );
+
+        waitForElementAndClick(
+                By.id(actionButtonOnPopupLocator),
+                "Cannot find 'View list' button",
+                5
+        );
+
+        int amountOfSavedArticleBeforeDeletion = getAmountOfElements(
+                By.id(savedArticleLocator)
+        );
+
+        Assert.assertEquals(
+                "We have saved not two article!",
+                2,
+                amountOfSavedArticleBeforeDeletion);
+
+        swipeElementToLeft(
+                By.xpath("//*[@text = 'JavaScript']"),
+                "Cannot find saved article"
+        );
+
+        int amountOfSavedArticleAfterDeletion = getAmountOfElements(
+                By.id(savedArticleLocator)
+        );
+
+        Assert.assertEquals(
+                "Not one article present after deletion!",
+                1,
+                amountOfSavedArticleAfterDeletion);
+
+        String descriptionBeforeOpen = waitForElementAndGetAttribute(
+                By.id(articleDescriptionOnMyListLocator),
+                "text",
+                "Cannot find article description",
+                15
+        );
+
+        waitForElementAndClick(
+                By.id(articleDescriptionOnMyListLocator),
+                "Cannot find saved article",
+                10
+        );
+
+        String descriptionAfterOpen = waitForElementAndGetAttribute(
+                By.id(articleDescriptionOnArticlePageLocator),
+                "text",
+                "Cannot find article description",
+                15
+        );
+
+        Assert.assertEquals(
+                "Article description have changed after article open",
+                descriptionBeforeOpen,
+                descriptionAfterOpen
+        );
+    }
+
 
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
