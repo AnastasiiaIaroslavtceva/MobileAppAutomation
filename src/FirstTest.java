@@ -560,6 +560,36 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testArticleTitlePresence() {
+        String searchPlaceholder = "Search Wikipedia";
+        String articleTitleLocator = "//*[@resource-id = 'pcs']//*[@text = 'Java (programming language)']";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, '" + searchPlaceholder + "')]"),
+                "Cannot find '" + searchPlaceholder + "' input on Explore page",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Java",
+                "Cannot find '" + searchPlaceholder + "' input on Search page",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id = 'org.wikipedia:id/page_list_item_title'][@text = 'Java (programming language)']"),
+                "Cannot find 'Java' article",
+                5
+        );
+
+        assertElementPresent(
+                By.xpath(articleTitleLocator),
+                "We've not found article title by request: " + articleTitleLocator
+        );
+    }
+
 
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -682,7 +712,15 @@ public class FirstTest {
         if (amountOfElements > 0) {
             String defaultMessage = "An element '" + by.toString() + "' supposed to be not present";
             throw new AssertionError(defaultMessage + " " + errorMessage);
+        }
+    }
 
+    private void assertElementPresent(By by, String errorMessage) {
+        int amountOfElements = getAmountOfElements(by);
+
+        if (amountOfElements == 0) {
+            String defaultMessage = "An element '" + by.toString() + "' supposed to be present! \n";
+            throw new AssertionError(defaultMessage + errorMessage);
         }
     }
 
