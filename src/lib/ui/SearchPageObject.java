@@ -10,7 +10,8 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_CANCEL_BUTTON = "org.wikipedia:id/search_close_btn",
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@class = 'android.view.ViewGroup']//*[@text = '{SUBSTRING}']",
             SEARCH_RESULT_ELEMENT = "org.wikipedia:id/page_list_item_title",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text = 'No results']";
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text = 'No results']",
+            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_SUBSTRINGS_TPL = "//*[@text = '{TITLE_SUBSTRING}']//following-sibling::*[@text = '{DESCRIPTION_SUBSTRING}']/parent::*";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -19,6 +20,12 @@ public class SearchPageObject extends MainPageObject {
     /* TEMPLATE METHODS */
     private static String getResultSearchElement(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+    }
+
+    private static String getResultSearchElementByTitleAndDescriptionSubstrings(String titleSubstring, String descriptionSubstring) {
+        return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_SUBSTRINGS_TPL
+                .replace("{TITLE_SUBSTRING}", titleSubstring)
+                .replace("{DESCRIPTION_SUBSTRING}", descriptionSubstring);
     }
     /* TEMPLATE METHODS */
 
@@ -73,6 +80,13 @@ public class SearchPageObject extends MainPageObject {
                 By.xpath(searchResultXpath),
                 "Cannot find search result with substring " + substring)
         ;
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        String resultSearchElementXpath = getResultSearchElementByTitleAndDescriptionSubstrings(title, description);
+        this.waitForElementPresent(
+                By.xpath(resultSearchElementXpath),
+                "Cannot find search result by title: '" + title + "' and description: '" + description + "'");
     }
 
     public void clickByArticleWithSubstring(String substring) {
