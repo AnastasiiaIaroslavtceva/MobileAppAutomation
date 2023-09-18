@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.*;
@@ -7,6 +9,7 @@ import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class MyListsTests extends CoreTestCase {
@@ -16,6 +19,11 @@ public class MyListsTests extends CoreTestCase {
             PASSWORD = "Appium123";
 
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "MyLists")})
+    @DisplayName("Save an article to My List")
+    @Description("We save one article to my list")
+    @Step("Starting test testSaveFirstArticleToMyList")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testSaveFirstArticleToMyList() {
 
         SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
@@ -42,7 +50,7 @@ public class MyListsTests extends CoreTestCase {
 
             articlePageObject.waitForTitleElement();
 
-            assertEquals("We are not on the same page after login",
+            Assert.assertEquals("We are not on the same page after login",
                     articleTitle,
                     articlePageObject.getArticleTitle()
             );
@@ -65,6 +73,11 @@ public class MyListsTests extends CoreTestCase {
     }
 
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "MyLists")})
+    @DisplayName("Save two article to My List")
+    @Description("We save two article to my list and delete one of them")
+    @Step("Starting test testSaveTwoArticleToMyList")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testSaveTwoArticleToMyList() {
         SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
@@ -89,7 +102,7 @@ public class MyListsTests extends CoreTestCase {
 
             articlePageObject.waitForTitleElement();
 
-            assertEquals("We are not on the same page after login",
+            Assert.assertEquals("We are not on the same page after login",
                     articleTitle,
                     articlePageObject.getArticleTitle()
             );
@@ -118,7 +131,7 @@ public class MyListsTests extends CoreTestCase {
         MyListsPageObject myListsPageObject = MyListsPageObjectFactory.get(driver);
         int amountOfSavedArticleBeforeDeletion = myListsPageObject.getArticleAmountInMyList();
 
-        assertEquals(
+        Assert.assertEquals(
                 "We have saved not two article!",
                 2,
                 amountOfSavedArticleBeforeDeletion);
@@ -126,7 +139,7 @@ public class MyListsTests extends CoreTestCase {
         myListsPageObject.swipeByArticleToDelete("JavaScript");
         int amountOfSavedArticleAfterDeletion = myListsPageObject.getArticleAmountInMyList();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Not one article present after deletion!",
                 1,
                 amountOfSavedArticleAfterDeletion);
@@ -135,7 +148,7 @@ public class MyListsTests extends CoreTestCase {
         myListsPageObject.clickOnArticleInMyList();
         String titleAfterOpen = articlePageObject.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Article description have changed after article open",
                 titleBeforeOpen,
                 titleAfterOpen

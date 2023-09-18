@@ -1,5 +1,6 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class SearchPageObject extends MainPageObject {
@@ -28,6 +29,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
     /* TEMPLATE METHODS */
 
+    @Step("Initializing the search field")
     public void initSearchInput() {
         this.waitForElementPresent(
                 SEARCH_INIT_ELEMENT,
@@ -41,6 +43,7 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Waiting for button to cancel search result")
     public void waitForCancelButtonToAppear() {
         this.waitForElementPresent(
                 SEARCH_CANCEL_BUTTON,
@@ -49,6 +52,7 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Waiting for search cancel button to disappear")
     public void waitForCancelButtonToDisappear() {
         this.waitForElementNotPresent(
                 SEARCH_CANCEL_BUTTON,
@@ -57,14 +61,16 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Clicking button to cancel search result")
     public void clickCancelButton() {
         this.waitForElementAndClick(
-               SEARCH_CANCEL_BUTTON,
+                SEARCH_CANCEL_BUTTON,
                 "Cannot find and click search cancel button",
                 5
         );
     }
 
+    @Step("Typing '{searchLine}' to the search line")
     public void typeSearchLine(String searchLine) {
         this.waitForElementAndSendKeys(
                 SEARCH_INPUT,
@@ -73,21 +79,24 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Waiting for search result")
     public void waitForSearchResult(String substring) {
         String searchResultXpath = getResultSearchElement(substring);
         this.waitForElementPresent(
-               searchResultXpath,
-                "Cannot find search result with substring " + substring)
-        ;
+                searchResultXpath,
+                "Cannot find search result with substring " + substring
+        );
     }
 
+    @Step("Waiting for element by substring in title and description")
     public void waitForElementByTitleAndDescription(String title, String description) {
         String resultSearchElementXpath = getResultSearchElementByTitleAndDescriptionSubstrings(title, description);
         this.waitForElementPresent(
-               resultSearchElementXpath,
+                resultSearchElementXpath,
                 "Cannot find search result by title: '" + title + "' and description: '" + description + "'");
     }
 
+    @Step("Waiting for search result and select an article by substring in article title")
     public void clickByArticleWithSubstring(String substring) {
         String searchResultXpath = getResultSearchElement(substring);
         this.waitForElementAndClick(
@@ -97,15 +106,17 @@ abstract public class SearchPageObject extends MainPageObject {
         ;
     }
 
+    @Step("Getting amount of found articles")
     public int getAmountOfFoundArticles() {
         this.waitForElementPresent(
-               SEARCH_RESULT_ELEMENT,
+                SEARCH_RESULT_ELEMENT,
                 "Cannot find anything by the request",
                 15
         );
         return this.getAmountOfElements(SEARCH_RESULT_ELEMENT);
     }
 
+    @Step("Waiting for empty result label")
     public void waitForEmptyResultLabel() {
         this.waitForElementPresent(
                 SEARCH_EMPTY_RESULT_ELEMENT,
@@ -114,6 +125,7 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Making sure there are no results for the search")
     public void assetThereIsNoResultOfSearch() {
         this.assertElementNotPresent(
                 SEARCH_RESULT_ELEMENT,
@@ -121,14 +133,16 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Making sure search input has expected text")
     public void assertSearchInputHasText(String expectedText) {
         this.assertElementHasText(
-               SEARCH_INPUT,
+                SEARCH_INPUT,
                 expectedText,
                 "We see unexpected text!"
         );
     }
 
+    @Step("Making sure search result titles contain expected text")
     public void assertSearchResultTitlesContainText(String expectedText) {
         this.assertElementsContainText(
                 SEARCH_RESULT_ELEMENT,

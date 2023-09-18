@@ -1,5 +1,6 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -28,6 +29,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         super(driver);
     }
 
+    @Step("Open folder with name '{nameOfFolder}'")
     public void openFolderByName(String nameOfFolder) {
         String folderNameXpath = getFolderXpathByName(nameOfFolder);
         this.waitForElementAndClick(
@@ -37,6 +39,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         );
     }
 
+    @Step("Waiting for appearing article with title '{articleTitle}'")
     public void waitForArticleAppearByTitle(String articleTitle) {
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
         this.waitForElementPresent(
@@ -46,6 +49,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         );
     }
 
+    @Step("Waiting for disappearing article with title '{articleTitle}'")
     public void waitForArticleDisappearByTitle(String articleTitle) {
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
         this.waitForElementNotPresent(
@@ -55,6 +59,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         );
     }
 
+    @Step("Delete article '{articleTitle}' from My list")
     public void swipeByArticleToDelete(String articleTitle) {
         this.waitForArticleAppearByTitle(articleTitle);
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
@@ -76,6 +81,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         this.waitForArticleDisappearByTitle(articleTitle);
     }
 
+    @Step("Close sync window")
     public void closeSyncWindow() {
         this.waitForElementAndClick(
                 CLOSE_SYNC_WINDOW_BUTTON,
@@ -84,10 +90,12 @@ abstract public class MyListsPageObject extends MainPageObject {
         );
     }
 
+    @Step("Get article amount in my list")
     public int getArticleAmountInMyList() {
         return this.getAmountOfElements(ARTICLE_IN_MY_LIST);
     }
 
+    @Step("Get article title in my list")
     public String getArticleTitleInMyList() {
         if (Platform.getInstance().isAndroid()) {
             return this.waitForElementAndGetAttribute(
@@ -104,6 +112,7 @@ abstract public class MyListsPageObject extends MainPageObject {
         }
     }
 
+    @Step("Clicking on article title in my list")
     public void clickOnArticleInMyList() {
         this.waitForElementAndClick(
                 ARTICLE_TITLE_IN_MY_LIST,

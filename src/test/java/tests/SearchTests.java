@@ -1,12 +1,20 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class SearchTests extends CoreTestCase {
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Check search")
+    @Description("We type in search line and wait for search result")
+    @Step("Starting test testSearch")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testSearch() {
         SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
@@ -15,6 +23,11 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Cancel search")
+    @Description("We type in search line and click on cancel button")
+    @Step("Starting test testSearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testCancelSearch() {
         SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
@@ -25,6 +38,11 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Amount of not empty search")
+    @Description("We type in search line and make sure that have several search result")
+    @Step("Starting test testAmountOfNotEmptySearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testAmountOfNotEmptySearch() {
         String searchLine = "Linking Park discography";
 
@@ -33,13 +51,18 @@ public class SearchTests extends CoreTestCase {
         searchPageObject.typeSearchLine(searchLine);
         int amountOfSearchResult = searchPageObject.getAmountOfFoundArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 "We find too few results!",
                 amountOfSearchResult > 0
         );
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Amount of empty search")
+    @Description("We type in search line and make sure that have no search result")
+    @Step("Starting test testAmountOfEmptySearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testAmountOfEmptySearch() {
         String searchLine = "zxcvasdfqwer";
 
@@ -51,6 +74,11 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Check search input text")
+    @Description("Make sure that search input has expected text")
+    @Step("Starting test testSearchInputText")
+    @Severity(value = SeverityLevel.MINOR)
     public void testSearchInputText() {
         String searchInputText = "Search Wikipedia";
 
@@ -60,6 +88,11 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Search and cancel search")
+    @Description("We type in search line, make sure that have several result, click on cancel button and check that result disappears")
+    @Step("Starting test testSearchAndCancelSearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testSearchAndCancelSearch() {
         String searchLine = "Sky";
 
@@ -68,7 +101,7 @@ public class SearchTests extends CoreTestCase {
         searchPageObject.typeSearchLine(searchLine);
         int amountOfSearchResult = searchPageObject.getAmountOfFoundArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 "We see less articles than expected!",
                 amountOfSearchResult > 1
         );
@@ -79,6 +112,11 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Check search result titles")
+    @Description("We type in search line and make sure that search result titles contains expected text")
+    @Step("Starting test testArticleTitlesContent")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testArticleTitlesContent() {
         String searchLine = "Java";
 
@@ -89,6 +127,10 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Check first three search result")
+    @Description("We type in search line and make sure that first three search result contains expected title and description")
+    @Step("Starting test testArticleTitlesContent")
     public void testFirstThreeSearchResult() {
         String searchLine = "Java";
 

@@ -1,15 +1,23 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ChangeAppConditionTests extends CoreTestCase {
     @Test
+    @Feature(value = "App condition")
+    @DisplayName("Change screen orientation")
+    @Description("We change screen orientation on search result twice")
+    @Step("Starting test testChangeScreenOrientationOnSearchResult")
+    @Severity(value = SeverityLevel.MINOR)
     public void testChangeScreenOrientationOnSearchResult() {
         if (Platform.getInstance().isMW()) {
             return;
@@ -25,7 +33,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.rotateScreenLandscape();
         String descriptionAfterRotation = articlePageObject.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Article description have changed after screen rotation",
                 descriptionBeforeRotation,
                 descriptionAfterRotation
@@ -34,7 +42,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.rotateScreenPortrait();
         String descriptionAfterSecondRotation = articlePageObject.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Article description have changed after screen rotation",
                 descriptionBeforeRotation,
                 descriptionAfterSecondRotation
@@ -42,6 +50,11 @@ public class ChangeAppConditionTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "App condition")
+    @DisplayName("Send mobile app to background")
+    @Description("We Send mobile app to background and check working after it")
+    @Step("Starting test testCheckSearchArticleInBackground")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testCheckSearchArticleInBackground() {
         if (Platform.getInstance().isMW()) {
             return;
