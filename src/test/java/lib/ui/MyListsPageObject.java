@@ -1,15 +1,16 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import lib.Platform;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class MyListsPageObject extends MainPageObject {
-    public static final String
-            FOLDER_BY_NAME_TPL = "//*[@text = '{FOLDER_NAME}']",
-            ARTICLE_BY_TITLE_TPL = "//*[@text = '{TITLE}']",
-            CLOSE_SYNC_WINDOW_BUTTON = "org.wikipedia:id/negativeButton",
-            ARTICLE_IN_MY_LIST = "org.wikipedia:id/page_list_item_container",
-            ARTICLE_TITLE_IN_MY_LIST = "org.wikipedia:id/page_list_item_title";
+abstract public class MyListsPageObject extends MainPageObject {
+    protected static String
+            FOLDER_BY_NAME_TPL,
+            ARTICLE_BY_TITLE_TPL,
+            CLOSE_SYNC_WINDOW_BUTTON,
+            ARTICLE_IN_MY_LIST,
+            ARTICLE_TITLE_IN_MY_LIST,
+            REMOVE_FROM_SAVED_BUTTON;
 
     private static String getFolderXpathByName(String nameOfFolder) {
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", nameOfFolder);
@@ -19,14 +20,18 @@ public class MyListsPageObject extends MainPageObject {
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", articleTitle);
     }
 
-    public MyListsPageObject(AppiumDriver driver) {
+    private static String getRemoveButtonByTitle(String articleTitle) {
+        return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", articleTitle);
+    }
+
+    public MyListsPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
     public void openFolderByName(String nameOfFolder) {
         String folderNameXpath = getFolderXpathByName(nameOfFolder);
         this.waitForElementAndClick(
-                By.xpath(folderNameXpath),
+                folderNameXpath,
                 "Cannot find folder by name " + nameOfFolder,
                 5
         );
@@ -35,7 +40,7 @@ public class MyListsPageObject extends MainPageObject {
     public void waitForArticleAppearByTitle(String articleTitle) {
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
         this.waitForElementPresent(
-                By.xpath(articleXpath),
+                articleXpath,
                 "Cannot fins saved article by title " + articleTitle,
                 15
         );
@@ -44,7 +49,7 @@ public class MyListsPageObject extends MainPageObject {
     public void waitForArticleDisappearByTitle(String articleTitle) {
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
         this.waitForElementNotPresent(
-                By.xpath(articleXpath),
+                articleXpath,
                 "Saved article still present with title " + articleTitle,
                 15
         );
@@ -53,36 +58,55 @@ public class MyListsPageObject extends MainPageObject {
     public void swipeByArticleToDelete(String articleTitle) {
         this.waitForArticleAppearByTitle(articleTitle);
         String articleXpath = getSavedArticleXpathByTitle(articleTitle);
-        this.swipeElementToLeft(
-                By.xpath(articleXpath),
-                "Cannot find saved article"
-        );
+
+        if (Platform.getInstance().isAndroid()) {
+            this.swipeElementToLeft(
+                    articleXpath,
+                    "Cannot find saved article"
+            );
+        } else {
+            String removeLocator = getRemoveButtonByTitle(articleTitle);
+            this.waitForElementAndClick(removeLocator, "Cannot click button to remove article from saved", 10);
+        }
+
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+        }
+
         this.waitForArticleDisappearByTitle(articleTitle);
     }
 
     public void closeSyncWindow() {
         this.waitForElementAndClick(
-                By.id(CLOSE_SYNC_WINDOW_BUTTON),
+                CLOSE_SYNC_WINDOW_BUTTON,
                 "Cannot close sync window",
                 5
         );
     }
 
     public int getArticleAmountInMyList() {
-        return this.getAmountOfElements(By.id(ARTICLE_IN_MY_LIST));
+        return this.getAmountOfElements(ARTICLE_IN_MY_LIST);
     }
 
     public String getArticleTitleInMyList() {
-        return this.waitForElementAndGetAttribute(
-                By.id(ARTICLE_TITLE_IN_MY_LIST),
-                "text", "Cannot find article title",
-                15
-        );
+        if (Platform.getInstance().isAndroid()) {
+            return this.waitForElementAndGetAttribute(
+                    ARTICLE_TITLE_IN_MY_LIST,
+                    "text", "Cannot find article title",
+                    15
+            );
+        } else {
+            return this.waitForElementPresent(
+                    ARTICLE_IN_MY_LIST,
+                    "Cannot find article title",
+                    5
+            ).getText();
+        }
     }
 
     public void clickOnArticleInMyList() {
         this.waitForElementAndClick(
-                By.id(ARTICLE_TITLE_IN_MY_LIST),
+                ARTICLE_TITLE_IN_MY_LIST,
                 "Cannot find saved article",
                 10
         );

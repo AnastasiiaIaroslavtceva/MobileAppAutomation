@@ -1,19 +1,18 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class SearchPageObject extends MainPageObject {
-    private static final String
-            SEARCH_INIT_ELEMENT = "//*[contains(@text, 'Search Wikipedia')]",
-            SEARCH_INPUT = "org.wikipedia:id/search_src_text",
-            SEARCH_CANCEL_BUTTON = "org.wikipedia:id/search_close_btn",
-            SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@class = 'android.view.ViewGroup']//*[@text = '{SUBSTRING}']",
-            SEARCH_RESULT_ELEMENT = "org.wikipedia:id/page_list_item_title",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text = 'No results']",
-            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_SUBSTRINGS_TPL = "//*[@text = '{TITLE_SUBSTRING}']//following-sibling::*[@text = '{DESCRIPTION_SUBSTRING}']/parent::*";
+abstract public class SearchPageObject extends MainPageObject {
+    protected static String
+            SEARCH_INIT_ELEMENT,
+            SEARCH_INPUT,
+            SEARCH_CANCEL_BUTTON,
+            SEARCH_RESULT_BY_SUBSTRING_TPL,
+            SEARCH_RESULT_ELEMENT,
+            SEARCH_EMPTY_RESULT_ELEMENT,
+            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_SUBSTRINGS_TPL;
 
-    public SearchPageObject(AppiumDriver driver) {
+    public SearchPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -31,12 +30,12 @@ public class SearchPageObject extends MainPageObject {
 
     public void initSearchInput() {
         this.waitForElementPresent(
-                By.xpath(SEARCH_INIT_ELEMENT),
+                SEARCH_INIT_ELEMENT,
                 "Cannot find search init element",
                 5
         );
         this.waitForElementAndClick(
-                By.xpath(SEARCH_INIT_ELEMENT),
+                SEARCH_INIT_ELEMENT,
                 "Cannot find and click search init element",
                 5
         );
@@ -44,7 +43,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void waitForCancelButtonToAppear() {
         this.waitForElementPresent(
-                By.id(SEARCH_CANCEL_BUTTON),
+                SEARCH_CANCEL_BUTTON,
                 "Cannot find search cancel button!",
                 5
         );
@@ -52,7 +51,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void waitForCancelButtonToDisappear() {
         this.waitForElementNotPresent(
-                By.id(SEARCH_CANCEL_BUTTON),
+                SEARCH_CANCEL_BUTTON,
                 "Search cancel button is still present!",
                 5
         );
@@ -60,7 +59,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void clickCancelButton() {
         this.waitForElementAndClick(
-                By.id(SEARCH_CANCEL_BUTTON),
+               SEARCH_CANCEL_BUTTON,
                 "Cannot find and click search cancel button",
                 5
         );
@@ -68,7 +67,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void typeSearchLine(String searchLine) {
         this.waitForElementAndSendKeys(
-                By.id(SEARCH_INPUT),
+                SEARCH_INPUT,
                 searchLine, "Cannot find and type into search input",
                 5
         );
@@ -77,7 +76,7 @@ public class SearchPageObject extends MainPageObject {
     public void waitForSearchResult(String substring) {
         String searchResultXpath = getResultSearchElement(substring);
         this.waitForElementPresent(
-                By.xpath(searchResultXpath),
+               searchResultXpath,
                 "Cannot find search result with substring " + substring)
         ;
     }
@@ -85,14 +84,14 @@ public class SearchPageObject extends MainPageObject {
     public void waitForElementByTitleAndDescription(String title, String description) {
         String resultSearchElementXpath = getResultSearchElementByTitleAndDescriptionSubstrings(title, description);
         this.waitForElementPresent(
-                By.xpath(resultSearchElementXpath),
+               resultSearchElementXpath,
                 "Cannot find search result by title: '" + title + "' and description: '" + description + "'");
     }
 
     public void clickByArticleWithSubstring(String substring) {
         String searchResultXpath = getResultSearchElement(substring);
         this.waitForElementAndClick(
-                By.xpath(searchResultXpath),
+                searchResultXpath,
                 "Cannot find and click search result with substring " + substring,
                 10)
         ;
@@ -100,16 +99,16 @@ public class SearchPageObject extends MainPageObject {
 
     public int getAmountOfFoundArticles() {
         this.waitForElementPresent(
-                By.id(SEARCH_RESULT_ELEMENT),
+               SEARCH_RESULT_ELEMENT,
                 "Cannot find anything by the request",
                 15
         );
-        return this.getAmountOfElements(By.id(SEARCH_RESULT_ELEMENT));
+        return this.getAmountOfElements(SEARCH_RESULT_ELEMENT);
     }
 
     public void waitForEmptyResultLabel() {
         this.waitForElementPresent(
-                By.xpath(SEARCH_EMPTY_RESULT_ELEMENT),
+                SEARCH_EMPTY_RESULT_ELEMENT,
                 "Cannot find empty result element",
                 15
         );
@@ -117,14 +116,14 @@ public class SearchPageObject extends MainPageObject {
 
     public void assetThereIsNoResultOfSearch() {
         this.assertElementNotPresent(
-                By.id(SEARCH_RESULT_ELEMENT),
+                SEARCH_RESULT_ELEMENT,
                 "We supposed not to find any result"
         );
     }
 
     public void assertSearchInputHasText(String expectedText) {
         this.assertElementHasText(
-                By.id(SEARCH_INPUT),
+               SEARCH_INPUT,
                 expectedText,
                 "We see unexpected text!"
         );
@@ -132,7 +131,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void assertSearchResultTitlesContainText(String expectedText) {
         this.assertElementsContainText(
-                By.id(SEARCH_RESULT_ELEMENT),
+                SEARCH_RESULT_ELEMENT,
                 expectedText,
                 "Article titles don't contains " + expectedText)
         ;
